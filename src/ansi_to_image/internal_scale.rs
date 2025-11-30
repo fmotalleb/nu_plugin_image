@@ -17,11 +17,11 @@ pub struct InternalScale {
 //     }
 // }
 
-impl Into<PxScale> for InternalScale {
-    fn into(self) -> PxScale {
+impl From<InternalScale> for PxScale {
+    fn from(value: InternalScale) -> Self {
         PxScale {
-            x: self.x,
-            y: self.y,
+            x: value.x,
+            y: value.y,
         }
     }
 }

@@ -3,25 +3,37 @@ slog = "2.7.0"
 termcolor = "1.4.1"
 ansi_colours = "1.2.3"
 crossterm = "0.29.0"
-image = "0.25.6"
+
 imageproc = "0.25.0"
-include-flate = "0.3.0"
+include-flate = "0.3.1"
 ab_glyph = "0.2.29"
 vte = "0.15.0"
 lazy_static = "1.5.0"
 slog-term = "2.9.1"
 slog-async = "2.8.0"
 
+[dependencies.image]
+version = "0.25.6"
+default-features = false
+features = [
+    "png",
+    "jpeg",
+]
+
 [dependencies.clap]
-features = ["derive"]
+features = [
+    "derive",
+]
 version = "4.5.40"
 
 [dependencies.nu-plugin]
-version = "0.106.1"
+version = "0.109.0"
 
 [dependencies.nu-protocol]
-features = ["plugin"]
-version = "0.106.1"
+features = [
+    "plugin",
+]
+version = "0.109.0"
 
 [features]
 all-fonts = [
@@ -29,10 +41,14 @@ all-fonts = [
     "font-anonymous_pro",
     "font-ubuntu",
 ]
-default = []
-font-anonymous_pro = []
-font-iosevka_term = []
-font-ubuntu = []
+default = [
+]
+font-anonymous_pro = [
+]
+font-iosevka_term = [
+]
+font-ubuntu = [
+]
 with-debug = [
     "slog/max_level_debug",
     "slog/release_max_level_debug",
@@ -43,7 +59,9 @@ with-trace = [
 ]
 
 [package]
-authors = ["Motalleb Fallahnezhad <fmotalleb@gmail.com>"]
+authors = [
+    "Motalleb Fallahnezhad <fmotalleb@gmail.com>",
+]
 description = "A nushell plugin to open png images in the shell and save ansi string as images (like tables or ...)"
 edition = "2021"
 homepage = "https://github.com/FMotalleb/nu_plugin_image"
@@ -57,4 +75,4 @@ license = "MIT"
 name = "nu_plugin_image"
 readme = "README.md"
 repository = "https://github.com/FMotalleb/nu_plugin_image"
-version = "0.106.1"
+version = "0.109.0"

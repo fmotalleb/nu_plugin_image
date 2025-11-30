@@ -15,15 +15,15 @@ pub struct FontFamily<'a> {
 
 impl FontFamily<'static> {
     fn all_fonts() -> Vec<(String, FontBuilder)> {
-        let mut result: Vec<(String, FontBuilder)> = vec![];
-        result.push(("SourceCodePro".to_string(), Self::source_code_pro));
-        #[cfg(feature = "font-ubuntu")]
-        result.push(("Ubuntu".to_string(), Self::ubuntu));
-        #[cfg(feature = "font-iosevka_term")]
-        result.push(("IosevkaTerm".to_string(), Self::iosevka_term));
-        #[cfg(feature = "font-anonymous_pro")]
-        result.push(("AnonymousPro".to_string(), Self::anonymous_pro));
-        result
+        vec![
+            ("SourceCodePro".to_string(), Self::source_code_pro),
+            #[cfg(feature = "font-ubuntu")]
+            ("Ubuntu".to_string(), Self::ubuntu),
+            #[cfg(feature = "font-iosevka_term")]
+            ("IosevkaTerm".to_string(), Self::iosevka_term),
+            #[cfg(feature = "font-anonymous_pro")]
+            ("AnonymousPro".to_string(), Self::anonymous_pro),
+        ]
     }
     pub fn list() -> Vec<String> {
         Self::all_fonts().into_iter().map(|i| i.0).collect()
@@ -35,7 +35,7 @@ impl FontFamily<'static> {
                 return value.1();
             }
         }
-        return Self::default();
+        Self::default()
     }
     pub fn try_from_bytes(
         name: Option<String>,
@@ -49,15 +49,13 @@ impl FontFamily<'static> {
         let italic = FontRef::try_from_slice(italic);
         let bold_italic = FontRef::try_from_slice(bold_italic);
         match (regular, bold, italic, bold_italic) {
-            (Ok(regular), Ok(bold), Ok(italic), Ok(bold_italic)) => {
-                return Some(FontFamily {
-                    name: name.unwrap_or("Custom".to_string()),
-                    regular,
-                    bold,
-                    italic,
-                    bold_italic,
-                })
-            }
+            (Ok(regular), Ok(bold), Ok(italic), Ok(bold_italic)) => Some(FontFamily {
+                name: name.unwrap_or("Custom".to_string()),
+                regular,
+                bold,
+                italic,
+                bold_italic,
+            }),
             _ => None,
         }
     }

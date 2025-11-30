@@ -1,4 +1,4 @@
-use include_flate::lazy_static;
+use lazy_static::lazy_static;
 use slog::{Drain, Logger};
 use slog_async::Async;
 use slog_term::{CompactFormat, TermDecorator};
@@ -14,7 +14,7 @@ lazy_static! {
         let decorator = TermDecorator::new().build();
         let drain = CompactFormat::new(decorator).build().fuse();
         let drain = RuntimeLevelFilter {
-            drain: drain,
+            drain,
             on: LOG_LEVEL.clone(),
         }
         .fuse();

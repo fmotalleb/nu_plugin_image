@@ -18,14 +18,8 @@ pub fn ansi_to_image(
     input: &Value,
 ) -> Result<Value, LabeledError> {
     let i: &[u8] = match input {
-        Value::String {
-            val,
-            internal_span: _,
-        } => val.as_bytes(),
-        Value::Binary {
-            val,
-            internal_span: _,
-        } => val,
+        Value::String { val, .. } => val.as_bytes(),
+        Value::Binary { val, .. } => val,
         _ => {
             return Err(make_params_err(
                 "cannot read input as binary data (maybe its empty)".to_string(),
@@ -33,13 +27,10 @@ pub fn ansi_to_image(
             ))
         }
     };
-    let size = match call.get_flag_value("width") {
-        Some(val) => match val.as_int().ok() {
-            Some(value) => Some(value as u32),
-            _ => None,
-        },
-        _ => None,
-    };
+    let size = call
+        .get_flag_value("width")
+        .map(|a| a.as_int().ok())
+        .and_then(|a| a.map(|b| b as u32));
     let font: FontFamily<'_> = resolve_font(call);
     let out_path = call.opt::<String>(0);
 
@@ -61,7 +52,7 @@ pub fn ansi_to_image(
         }
         _ => {
             let now = SystemTime::now().duration_since(SystemTime::UNIX_EPOCH);
-            let current = engine.get_current_dir().map(|p| PathBuf::from(p));
+            let current = engine.get_current_dir().map(PathBuf::from);
             if let (Ok(now), Ok(current)) = (now, current) {
                 let current = &mut current.clone();
                 current.push(PathBuf::from(format!("nu-image-{}.png", now.as_secs())));
@@ -103,19 +94,13 @@ pub fn ansi_to_image(
 }
 
 fn resolve_font(call: &EvaluatedCall) -> FontFamily<'static> {
-    let mut font: FontFamily<'static> = match call.get_flag_value("font").map(|value| match value {
-        Value::String { val, .. } => Some(FontFamily::from_name(val)),
-        _ => None,
-    }) {
-        Some(value) => {
-            if let Some(font) = value {
-                font
-            } else {
-                FontFamily::default()
-            }
-        }
-        None => FontFamily::default(),
-    };
+    let mut font: FontFamily<'static> = call
+        .get_flag_value("font")
+        .and_then(|value| match value {
+            Value::String { val, .. } => Some(FontFamily::from_name(val)),
+            _ => None,
+        })
+        .unwrap_or_else(FontFamily::default);
     // TODO custom fonts disabled for now
     if let Some(path) = call.get_flag_value("font-regular") {
         let buffer = load_file(path);

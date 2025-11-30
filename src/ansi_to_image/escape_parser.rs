@@ -194,22 +194,19 @@ fn parse_color(mode: &u16, iter: &mut Iter<&u16>) -> ColorType {
                         return ColorType::PrimaryForeground;
                     }
                 };
-                return color;
+                color
             } else {
                 warn!(
                     "[COLOR_PARSER] fixed color value not supplied, parse_fixed_color(code: null)"
                 );
 
-                return ColorType::PrimaryForeground;
+                ColorType::PrimaryForeground
             }
         }
         2 => match (iter.next(), iter.next(), iter.next()) {
-            (Some(r), Some(g), Some(b)) => {
-                let color = ColorType::Rgb {
-                    field1: (**r as u8, **g as u8, **b as u8),
-                };
-                return color;
-            }
+            (Some(r), Some(g), Some(b)) => ColorType::Rgb {
+                field1: (**r as u8, **g as u8, **b as u8),
+            },
             (r, g, b) => {
                 warn!(
                     "[COLOR_PARSER] rgb color value not supplied (correctly), parse_rgb_color({}, {}, {})",
@@ -217,7 +214,7 @@ fn parse_color(mode: &u16, iter: &mut Iter<&u16>) -> ColorType {
                     g.map(|i| i.to_string() ).unwrap_or("null".to_string()),
                     b.map(|i| i.to_string() ).unwrap_or("null".to_string())
                 );
-                return ColorType::PrimaryForeground;
+                ColorType::PrimaryForeground
             }
         },
         v => {
@@ -225,7 +222,7 @@ fn parse_color(mode: &u16, iter: &mut Iter<&u16>) -> ColorType {
                 "[COLOR_PARSER] color mode is not supplied correctly, parse_color({}, ...)",
                 v
             );
-            return ColorType::PrimaryForeground;
+            ColorType::PrimaryForeground
         }
     }
 }

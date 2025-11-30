@@ -27,7 +27,7 @@ impl Default for Palette {
         if let Ok(_) = std::env::var("NU_PLUGIN_IMAGE_FG") {
             return Palette::Env;
         }
-        return Palette::Vscode;
+        Palette::Vscode
     }
 }
 
@@ -867,7 +867,7 @@ pub(crate) fn strhex_to_rgba(hex: String) -> Option<[u8; 4]> {
 
     let has_alpha = hex.len() == 8;
 
-    if let Ok(hex) = i64::from_str_radix(&hex, 16) {
+    if let Ok(hex) = i64::from_str_radix(hex, 16) {
         let alpha = if has_alpha {
             Some((hex >> 24) as u8)
         } else {

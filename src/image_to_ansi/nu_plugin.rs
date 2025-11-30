@@ -8,14 +8,14 @@ pub fn image_to_ansi(call: &EvaluatedCall, input: &Value) -> Result<Value, Label
     match build_params(call, input) {
         Ok(params) => {
             let img = PngDecoder::new(Cursor::new(params.file.as_slice()))
-                .map(|img| image::DynamicImage::from_decoder(img));
+                .map(image::DynamicImage::from_decoder);
             match img {
                 Ok(img) => {
                     let result = super::writer::lib::to_ansi(&img.unwrap(), &params);
 
-                    return result
+                    result
                         .map(|value| Value::string(value, call.head))
-                        .map_err(|err| response_error(err, call.head));
+                        .map_err(|err| response_error(err, call.head))
                 }
                 Err(er) => Err(response_error(er.to_string(), call.head)),
             }
@@ -51,14 +51,8 @@ fn build_params(call: &EvaluatedCall, input: &Value) -> Result<IntoAnsiParams, L
         Ok(file) => params.file = file.to_owned(),
         Err(err) => return Err(make_params_err(err.to_string(), call.head)),
     };
-    params.width = match load_u32(call, "width") {
-        Ok(value) => Some(value),
-        Err(_) => None,
-    };
-    params.height = match load_u32(call, "height") {
-        Ok(value) => Some(value),
-        Err(_) => None,
-    };
+    params.width = load_u32(call, "width").ok();
+    params.height = load_u32(call, "height").ok();
 
     Ok(params)
 }
@@ -83,10 +77,9 @@ fn load_u32(call: &EvaluatedCall, flag_name: &str) -> Result<u32, LabeledError> 
 }
 
 fn make_params_err(text: String, span: Span) -> LabeledError {
-    return LabeledError::new(text)
-        .with_label("faced an error when tried to parse the params", span);
+    LabeledError::new(text).with_label("faced an error when tried to parse the params", span)
 }
 
 fn response_error(text: String, span: Span) -> LabeledError {
-    return LabeledError::new(text).with_label("cannot create image", span);
+    LabeledError::new(text).with_label("cannot create image", span)
 }

@@ -13,7 +13,7 @@ impl StringWriter {
     }
     pub fn read(&mut self) -> String {
         let result = String::from_utf8_lossy(self.inner_buf.as_slice());
-        return result.to_string();
+        result.to_string()
     }
 
     fn write_str(&mut self, s: &str) -> io::Result<()> {
@@ -137,7 +137,7 @@ impl Write for StringWriter {
 
 impl WriteColor for StringWriter {
     fn supports_color(&self) -> bool {
-        return true;
+        true
     }
 
     fn set_color(&mut self, spec: &ColorSpec) -> io::Result<()> {
@@ -159,10 +159,10 @@ impl WriteColor for StringWriter {
         if spec.strikethrough() {
             self.write_str("\x1B[9m")?;
         }
-        if let Some(ref c) = spec.fg() {
+        if let Some(c) = spec.fg() {
             self.write_color(true, c, spec.intense())?;
         }
-        if let Some(ref c) = spec.bg() {
+        if let Some(c) = spec.bg() {
             self.write_color(false, c, spec.intense())?;
         }
         Ok(())

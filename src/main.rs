@@ -170,8 +170,5 @@ impl SimplePluginCommand for ToPngCommand {
 }
 
 fn main() {
-    nu_plugin::serve_plugin(
-        &mut ImageConversionPlugin {},
-        nu_plugin::MsgPackSerializer {},
-    )
+    nu_plugin::serve_plugin(&ImageConversionPlugin {}, nu_plugin::MsgPackSerializer {})
 }
