@@ -1,10 +1,10 @@
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 0 */2 * *' 
-  
+    - cron: "0 0 */2 * *"
+
 name: Update dependencies
-  
+
 jobs:
   update:
     runs-on: ubuntu-latest
@@ -12,7 +12,7 @@ jobs:
       - name: Setup Nushell
         uses: hustcer/setup-nu@main
         with:
-          version: "*"
+          version: "0.108.0"
       - uses: actions/checkout@v2
       - name: upgrade
         id: upgrade
@@ -21,7 +21,7 @@ jobs:
           http get https://raw.githubusercontent.com/FMotalleb/nushell_sync_script/refs/heads/main/bump_dependencies.nu
             | save /tmp/update.nu
           nu /tmp/update.nu
-      - uses: EndBug/add-and-commit@v9 
+      - uses: EndBug/add-and-commit@v9
         with:
           author_name: GitHub-Action
       - name: Extract Version
